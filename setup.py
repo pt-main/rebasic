@@ -1,9 +1,5 @@
 from setuptools import setup, find_packages
 
-with open('README.md') as f:
-    README = f.read()
-
-
 setup(
     name='rebasic',
     author='Pt',
