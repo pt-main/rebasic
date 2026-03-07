@@ -8,7 +8,6 @@ setup(
     name='rebasic',
     author='Pt',
     description='An opensource project for create language translators/compilers/interpreters.',
-    long_description=README,
     author_email='kvantorium73.int@gmail.com',
     version='1.0.0',
     packages=find_packages(where='src'),
