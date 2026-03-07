@@ -1,16 +1,15 @@
-from rebasic import Translator
 # === start file ===
 
 class MetaGeneration:
-    def __init__(self, TranslatorSelf: Translator):
-        self.__ts = TranslatorSelf
+    def __init__(self, EngineSelf: 'Engine'):
+        self.__engine = EngineSelf
 
     def generate_cmd_docs(self) -> str:
         documentation = []
-        commands = self.__ts.commands
+        commands = self.__engine.commands
         max_length = 0
         for cmd in commands.keys():
-            if cmd in self.__ts._documentation_available:
+            if cmd in self.__engine._documentation_available:
                 cmd_data = commands[cmd]
                 max_length = max(len(cmd), max_length)
                 documentation.append(f'|- {cmd}')
@@ -25,4 +24,4 @@ class MetaGeneration:
     
     def set_documentation_available_list(self, cmd_list: str):
         'add command to available docs list'
-        self.__ts._documentation_available = cmd_list
+        self.__engine._documentation_available = cmd_list

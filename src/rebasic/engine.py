@@ -19,11 +19,11 @@ from ._defaults import _Defaults
 
 
 # ===================================
-#       MARK: TRANSLATOR CLASS
+#       MARK: ENGINE CLASS
 # ===================================
-class Translator(_CodeState, _LangConfig):
+class Engine(_CodeState, _LangConfig):
     '''
-    # Translator
+    # Engine
     Rebasic - an opensource project with sample for any
     compilers/translators/interpreters.
 
@@ -98,7 +98,7 @@ class Translator(_CodeState, _LangConfig):
     
     def reset(self):
         super().__init__()
-        self.event = _EventSystem(trs=self)
+        self.event = _EventSystem(engine=self)
         for event in self.constants.events.events: self.event.add_event(event)
         self.event.call_event(self.constants.events.RESET_START_EVENT)
         self.context = _LangContext()
@@ -111,7 +111,7 @@ class Translator(_CodeState, _LangConfig):
         self._in_macro: list[str] = []
         # commands: dict[
         #   command: 
-        #       handler     : [callable(translator, args, rawline)], 
+        #       handler     : [callable(engine, args, rawline)], 
         #       args_parser : [callable(raw_line)],
         #       docs        : [string]
         # ]

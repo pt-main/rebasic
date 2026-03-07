@@ -1,5 +1,5 @@
 from langfile_data import LangfileData
-from rebasic import Translator, create_basic_lang
+from rebasic import Engine, create_basic_lang
 from rebasic._basics import _create_runtime_scope
 __TestAvailable = True
 # === start file ===
@@ -28,16 +28,16 @@ class Langfile:
         return LangfileData().load(content)
     
     def create_lang(self, data: LangfileData):
-        trs = Translator(std=data.std_include)
-        scope = _create_runtime_scope(trs)
+        engine = Engine(std=data.std_include)
+        scope = _create_runtime_scope(engine)
         exec(data.lang_code, scope, scope)
-        trs._lang_name = data.lang_name + "@" + str(data.lang_version)
-        trs._std_names = data.std_names
+        engine._lang_name = data.lang_name + "@" + str(data.lang_version)
+        engine._std_names = data.std_names
         if data.lang_parser is not None:
-            trs._line_parser = data.lang_parser
-        trs.context._scope = data.lang_scope
-        self.lang = trs
-        return trs
+            engine._line_parser = data.lang_parser
+        engine.context._scope = data.lang_scope
+        self.lang = engine
+        return engine
 
     def pack_language_to_one_file(self, data: LangfileData):
         if '__BuildAvailable' not in globals().keys():
@@ -60,15 +60,15 @@ def create_{data.lang_name}_language():
     data = LangfileData().load(
         dictionary={repr(data)},
     )
-    trs = Translator(std=data.std_include)
-    scope = _create_runtime_scope(trs)
+    engine = Engine(std=data.std_include)
+    scope = _create_runtime_scope(engine)
     exec(data.lang_code, scope, scope)
-    trs._lang_name = data.lang_name + "@" + str(data.lang_version)
-    trs._std_names = data.std_names
+    engine._lang_name = data.lang_name + "@" + str(data.lang_version)
+    engine._std_names = data.std_names
     if data.lang_parser is not None:
-        trs._line_parser = data.lang_parser
-    trs.context._scope = data.lang_scope
-    return trs
+        engine._line_parser = data.lang_parser
+    engine.context._scope = data.lang_scope
+    return engine
         '''
         return code
 

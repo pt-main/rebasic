@@ -3,12 +3,12 @@ import asyncio
 import inspect
 
 class _EventSystem:
-    def __init__(self, trs: 'Translator'):
-        self.trs = trs
+    def __init__(self, engine: 'Engine'):
+        self._engine = engine
         self.handlers: dict[str, list[str]] = {'':[]}
         # handlers: 
         #    event: list[handlers]
-        # handler: function(translator, event_system)
+        # handler: function(engine, event_system)
         self.event_history = []
         self._events = []
     
@@ -32,7 +32,7 @@ class _EventSystem:
             print(f'Warning: event is not found: {event}. Warning skipped.')
         handlers = self.handlers[event]
         for handler in handlers: 
-            args = (self.trs, self)
+            args = (self._engine, self)
             try:
                 if inspect.iscoroutinefunction(handler): 
                     asyncio.run(handler(*args))

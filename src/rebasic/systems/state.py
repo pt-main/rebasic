@@ -4,7 +4,7 @@ import time
 class _LangState:
     '''
     # LangState
-    State of translator.
+    State of engine.
     '''
     def __init__(self):
         self.reset()

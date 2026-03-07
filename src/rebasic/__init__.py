@@ -12,17 +12,17 @@ An opensource project for create language translators/compilers/interpreters.
     - `__comptime [code block]`     - execute codeblock in python scope
     - `__rbimport [filename]`       - read & execute file on current lang
     - `# ...`                       - commentary
-- `Translator` class            - main translator class
+- `Engine` class                - main engine class
 - `Parser` class                - universal parser (in format `command args, ...`)
 - `Parser2` class               - universal parser with brackets (in format `command(args, ...)`)
 
 ## Main modules
-- `langfile/`        : realization of json config for languages
-- `parsing/`         : simple string parser for code
-- `systems/`         : system classes and configs for rebasic
-- `tooling/`         : tools and utils for languages
-- `_basics`          : standarts for rebasic with std
-- `translator`       : main class with rebasic translator
+- `langfile/`       : realization of json config for languages
+- `parsing/`        : simple string parser for code
+- `systems/`        : system classes and configs for rebasic
+- `tooling/`        : tools and utils for languages
+- `_basics`         : standarts for rebasic with std
+- `engine`          : main class with rebasic translator
 
 ## Dev info
 - Files can has comments like `#  === start file ===` . That's necessary for builder script.
@@ -40,5 +40,5 @@ __framework_meta__ = {
 # === start file ===
 
 from ._basics import basic_lang as create_basic_lang
-from .translator import Translator
+from .engine import Engine
 from .parsing import Parser, Parser2

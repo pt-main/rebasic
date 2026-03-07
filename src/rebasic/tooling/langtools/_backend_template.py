@@ -1,25 +1,25 @@
-from rebasic import Translator
+from rebasic import Engine
 # === start file ===
 
 
 class _TextBackend:
-    def __init__(self, trs: Translator):
-        self._trs = trs
-        trs.__backend__ = trs.context.constants.TEXT_GEN_FORMAT
-        if trs.context._generation_format != trs.context.constants.TEXT_GEN_FORMAT:
+    def __init__(self, trs: Engine):
+        self._trs = engine
+        engine.__backend__ = engine.context.constants.TEXT_GEN_FORMAT
+        if engine.context._generation_format != engine.context.constants.TEXT_GEN_FORMAT:
             raise TypeError(
                 f"Can't connect backend to trnaslator while generation format is not text."
             )
-        trs.backend = self
+        engine.backend = self
 
 
 
 class _NumericBackend:
-    def __init__(self, trs: Translator):
-        self._trs = trs
-        trs.__backend__ = trs.context.constants.NUMERIC_GEN_FORMAT
-        if trs.context._generation_format != trs.context.constants.NUMERIC_GEN_FORMAT:
+    def __init__(self, engine: Engine):
+        self._engine = engine
+        engine.__backend__ = engine.context.constants.NUMERIC_GEN_FORMAT
+        if engine.context._generation_format != engine.context.constants.NUMERIC_GEN_FORMAT:
             raise TypeError(
                 f"Can't connect backend to trnaslator while generation format is not text."
             )
-        trs.backend = self
+        engine.backend = self
