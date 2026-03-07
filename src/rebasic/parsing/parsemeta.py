@@ -1,4 +1,4 @@
-from base import Node, form_token_dict
+from .base import Node, form_token_dict
 
 # === start file ===
 

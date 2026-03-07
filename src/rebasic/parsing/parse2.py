@@ -4,7 +4,7 @@ Default rebasic parser.
 '''
 
 
-from parsemeta import *
+from .parsemeta import *
 
 __TestAvailable = False
 

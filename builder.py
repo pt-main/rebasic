@@ -15,8 +15,8 @@ SOURCE_DIR = Path('src')
 OUTPUT_FILE = Path('rebasic.py')
 FILES_TO_PARSE = [
     'rebasic/tooling/templating',
-    'rebasic/parsing/parsemeta',
     'rebasic/parsing/base',
+    'rebasic/parsing/parsemeta',
     'rebasic/parsing/parse',
     'rebasic/parsing/parse2',
     'rebasic/systems/exceptions',
@@ -27,7 +27,7 @@ FILES_TO_PARSE = [
     'rebasic/systems/generation',
     'rebasic/systems/event',
     'rebasic/_defaults',
-    'rebasic/translator',
+    'rebasic/engine',
     'rebasic/_basics',
     'rebasic/tooling/langtools/_backend_template',
     'rebasic/tooling/langtools/__templates',
@@ -110,7 +110,7 @@ __CliAvailable = False
     sep_line_length = 97  # full length of one debug line
 
     sep = '=' * sep_line_length
-    build += f'\n# {sep}\n# {"start of framework".center(len(sep))}\n# {sep}\n'
+    build += f'\n# {sep}\n# {"MARK: start of framework".center(len(sep))}\n# {sep}\n'
     
     print('=' * sep_line_length)
     warnings = []
@@ -143,7 +143,7 @@ __CliAvailable = False
         print(text)
 
         # Add file header
-        build += f'\n# {sep}\n# {(f"{file}.py ({lines_count} lines, {
+        build += f'\n# {sep}\n# {(f"MARK: {file}.py ({lines_count} lines, {
             chars_count} chars)").center(len(sep))}\n# {sep}\n'
         build += code + '\n'
 
@@ -151,7 +151,7 @@ __CliAvailable = False
     print('=' * sep_line_length)
 
     # Footer
-    build += f'\n# {sep}\n# {"end of framework".center(len(sep))} \n# {sep}\n'
+    build += f'\n# {sep}\n# {"MARK: end of framework".center(len(sep))} \n# {sep}\n'
 
     print('Warnings: ')
     for warn in warnings:

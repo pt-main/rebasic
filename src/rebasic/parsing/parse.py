@@ -7,7 +7,7 @@ Format -
 '''
 
 
-from parsemeta import *
+from .parsemeta import *
 
 __TestAvailable = False
 

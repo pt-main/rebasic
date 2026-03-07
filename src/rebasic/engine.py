@@ -200,8 +200,7 @@ class Engine(_CodeState, _LangConfig):
         else: status = False
         self.event.call_event(self.constants.events.WORK_DEFUALT_END_EVENT)
         self.state._log(f'end default work on line: {raw_line}, success: {status}', 'info')
-        if self.__std_cmd:
-            return status
+        if self.__std_cmd: return status
         else:
             if not status:
                 raise RebasicRuntimeException(f'Unknown Syntax: {command}')

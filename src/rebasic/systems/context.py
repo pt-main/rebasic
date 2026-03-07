@@ -37,6 +37,8 @@ class _LangContext:
             def  __enter__(self):
                 self._prev_point = self.__cs.current_point
                 self.__cs.current_point = self._point
+                if self._point not in self.__cs.code:
+                    self.__cs.code[self._point] = {'tabs': 0, 'code':[]}
                 return self.__cs
             def __exit__(self, *args, **kwargs):
                 self.__cs.current_point = self._prev_point
