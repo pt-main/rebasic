@@ -7,6 +7,8 @@
 [![Python](https://img.shields.io/badge/require-python_3.10+-black.svg)](https://github.com/pt-main/rebasic)
 [![Dev](https://img.shields.io/badge/development-by_Pt-blue.svg)](https://github.com/pt-main/rebasic)
 
+### `pip install rebasic`
+
 Open-source project for creating programming languages.
 
 # Features
