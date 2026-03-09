@@ -24,7 +24,7 @@ class _LangContext:
             'main': {'code':[], 'tabs':0},
         }
     
-    def work_with_point(ContextSelf, point: str, trs: 'Engine' = None):
+    def work_with_point(ContextSelf, point: str):
         if not isinstance(point, str): raise TypeError('Type of [point] must be str')
         class _work_with_point:
             __cs: _LangContext
@@ -32,7 +32,6 @@ class _LangContext:
             _prev_point: str
             def __init__(self):
                 self.__cs = ContextSelf
-                self.__cs.engine: 'Engine' | None = trs
                 self._point = point
             def  __enter__(self):
                 self._prev_point = self.__cs.current_point

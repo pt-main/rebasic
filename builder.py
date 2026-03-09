@@ -19,6 +19,8 @@ FILES_TO_PARSE = [
     'rebasic/parsing/parsemeta',
     'rebasic/parsing/parse',
     'rebasic/parsing/parse2',
+    'rebasic/parsing/parse3',
+    'rebasic/parsing/parse4',
     'rebasic/systems/exceptions',
     'rebasic/systems/context',
     'rebasic/systems/state',
@@ -33,6 +35,7 @@ FILES_TO_PARSE = [
     'rebasic/tooling/langtools/__templates',
     'rebasic/tooling/langtools/python',
     'rebasic/tooling/langrepl',
+    'rebasic/tooling/meta',
     'rebasic/langfile/langfile_data',
     'rebasic/langfile/parse_file',
     'cli'

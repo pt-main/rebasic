@@ -1,5 +1,9 @@
 # === start file ===
 class LangfileData:
+    '''
+    # LangfileData
+    Dataclass with values of langfile.
+    '''
     lang_name: str = 'rebasic'
     lang_parser: str | None = None
     lang_code: str = ''

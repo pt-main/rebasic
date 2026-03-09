@@ -4,13 +4,20 @@ __TestAvailable = False
 class Template:
     '''
     # Template 
-    Class with info about template. 
+    Template info and engine orchestrator. 
+
+    Default placeholder format: `[[?placeholder_name]]` (you can change sample)
 
     ### Extends: 
-        - `template` - template text with placeholders
-        - `defaults` - default values for template
+        - `template`    - template text with placeholders
+        - `defaults`    - default values for template
+        - `work`        - execute template
     '''
-    def __init__(self, template: str, **defaults: str) -> None:
+    def __init__(
+        self, 
+        template: str, 
+        **defaults: str, 
+    ) -> None:
         if not isinstance(template, str):
             raise TypeError(
                 'Invalid input type: Tepmlate must be type str.'
@@ -25,6 +32,14 @@ class Template:
         self.defaults = defaults
     
     def work(self, **kwargs) -> str:
+        '''
+        # work
+        Fromat your template with placeholders from kwargs.
+
+        (defualts support)
+
+        Use '__dict' arg for interprete value from that like kwargs.
+        '''
         return work_template(self, **kwargs)
     
     def __repr__(self) -> str:

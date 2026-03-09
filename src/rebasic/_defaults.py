@@ -10,11 +10,11 @@ class _Defaults:
         else: raise RuntimeError(
             "Can't end macros while macros is not started."
         )
-        self.macroses[name].pop()
+        self.code_state.macroses[name].pop()
     
     def _cm(self: 'Engine', raw: str, tokens):
         args = tokens[1].value
-        try: code: str = '\n'.join(self.macroses[args.strip()])
+        try: code: str = '\n'.join(self.code_state.macroses[args.strip()])
         except KeyError:
             raise RuntimeError(f'Invalid macros name: {args}')
         self.compile(code=code, status='macros executing')
@@ -23,9 +23,8 @@ class _Defaults:
         args = tokens[1].value
         codeblock_name = args.strip()
         self._write_raw = codeblock_name
-        if codeblock_name not in self.code_blocks:
-            self.code_blocks[codeblock_name] = []
-            self.code_blocks[codeblock_name].append('')
+        if codeblock_name not in self.code_state.code_blocks:
+            self.code_state.code_blocks[codeblock_name] = ['']
     
     def _cbe(self: 'Engine', raw: str, tokens):
         self._write_raw = None

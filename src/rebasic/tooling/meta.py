@@ -1,6 +1,13 @@
 # === start file ===
 
 class MetaGeneration:
+    '''
+    # MetaGeneration
+    Control and generate meta values working with `Engine()`. 
+
+    ### Extends:
+    - generation documentation for commands based on docs of commands
+    '''
     def __init__(self, EngineSelf: 'Engine'):
         self.__engine = EngineSelf
 

@@ -1,17 +1,18 @@
 from .base import Node
+from .parsemeta import ParserMeta
 __TestAvailable = True
 # === start file ===
 
-class Parser3:
+class Parser3(ParserMeta):
     '''
     # Parser v3 (in beta)
 
     Support:
-    - command args
-    - command(args)
-    - command { ... }
+    - `command args`
+    - `command(args)`
+    - `command { ... }`
     '''
-    def __init__(self):
+    def reset(self):
         self.tokens = []         
         self.current_raw = []    
         self.current_command = None 
@@ -92,11 +93,3 @@ class Parser3:
             Node(type='args', value=args)
         ]
         return {'raw': line, 'tokens': tokens}
-
-    def __call__(self, string: str) -> list[dict]:
-        self.tokens = []
-        self.current_raw = []
-        self.current_command = None
-        self.brace_level = 0
-        self.in_block = False
-        return self.parse(string)

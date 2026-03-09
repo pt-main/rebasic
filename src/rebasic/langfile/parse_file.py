@@ -1,7 +1,7 @@
-from langfile_data import LangfileData
+from .langfile_data import LangfileData
 from rebasic import Engine, create_basic_lang
 from rebasic._basics import _create_runtime_scope
-__TestAvailable = True
+__TestAvailable = False
 # === start file ===
 import os
 import json
@@ -31,10 +31,10 @@ class Langfile:
         engine = Engine(std=data.std_include)
         scope = _create_runtime_scope(engine)
         exec(data.lang_code, scope, scope)
-        engine._lang_name = data.lang_name + "@" + str(data.lang_version)
-        engine._std_names = data.std_names
+        engine.config._lang_name = data.lang_name + "@" + str(data.lang_version)
+        engine.config._std_names = data.std_names
         if data.lang_parser is not None:
-            engine._line_parser = data.lang_parser
+            engine.config._line_parser = data.lang_parser
         engine.context._scope = data.lang_scope
         self.lang = engine
         return engine
@@ -63,10 +63,10 @@ def create_{data.lang_name}_language():
     engine = Engine(std=data.std_include)
     scope = _create_runtime_scope(engine)
     exec(data.lang_code, scope, scope)
-    engine._lang_name = data.lang_name + "@" + str(data.lang_version)
-    engine._std_names = data.std_names
+    engine.config._lang_name = data.lang_name + "@" + str(data.lang_version)
+    engine.config._std_names = data.std_names
     if data.lang_parser is not None:
-        engine._line_parser = data.lang_parser
+        engine.config._line_parser = data.lang_parser
     engine.context._scope = data.lang_scope
     return engine
         '''

@@ -15,6 +15,8 @@ An opensource project for create language translators/compilers/interpreters.
 - `Engine` class                - main engine class
 - `Parser` class                - universal parser (in format `command args, ...`)
 - `Parser2` class               - universal parser with brackets (in format `command(args, ...)`)
+- `Parser4` class   (alpha)     - best parser, regex based, full ast compleate. use so hard then with 1, 2, or 3 parser
+    (`Parser4` or any other ast parser usage need full refactor of language)
 
 ## Main modules
 - `langfile/`       : realization of json config for languages
@@ -27,11 +29,10 @@ An opensource project for create language translators/compilers/interpreters.
 ## Dev info
 - Files can has comments like `#  === start file ===` . That's necessary for builder script.
 
----
-'''
+---'''
 
 __framework_meta__ = {
-    'version': '1.6.10',
+    'version': '1.7.0.1',
     'name': 'rebasic',
     'stage': 'alpha',
     'release': '1'
@@ -41,4 +42,15 @@ __framework_meta__ = {
 
 from ._basics import basic_lang as create_basic_lang
 from .engine import Engine
-from .parsing import Parser, Parser2
+class parsing:
+    from .parsing import (
+        Parser, Parser2, Parser3, Parser4,
+        Node, form_token_dict as _form_token_dict
+    )
+class tooling:
+    from .tooling import (
+        MetaGeneration, 
+        Template, TemplateEngine,
+        Repl,
+        langtools,
+    )

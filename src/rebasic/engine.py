@@ -21,7 +21,7 @@ from ._defaults import _Defaults
 # ===================================
 #       MARK: ENGINE CLASS
 # ===================================
-class Engine(_CodeState, _LangConfig):
+class Engine:
     '''
     # Engine
     Rebasic - an opensource project with sample for any
@@ -51,8 +51,8 @@ class Engine(_CodeState, _LangConfig):
                 self.COMPILE_RUNTIME_EXCEPTION_EVENT = __gen_next()
                 self.COMPILE_EXCEPTION_EVENT = __gen_next()
                 # work default events
-                self.WORK_DEFUALT_START_EVENT = __gen_next()
-                self.WORK_DEFUALT_END_EVENT = __gen_next()
+                self.WORK_DEFAULT_START_EVENT = __gen_next()
+                self.WORK_DEFAULT_END_EVENT = __gen_next()
                 # work std events
                 self.WORK_STD_START_EVENT = __gen_next()
                 self.WORK_STD_END_EVENT = __gen_next()
@@ -71,30 +71,31 @@ class Engine(_CodeState, _LangConfig):
     def __init__(
         self, 
         std: bool = False, 
-        backend_tool: type | object = lambda *args: None,
+        backend_tool: object = lambda *args: None,
         std_names: dict = {},
     ) -> None:
         if not isinstance(std, bool): raise TypeError('Type of [std] must be bool')
+        self.__backend__: int = 0
         self.backend: object | None = backend_tool(self)
         self.constants.events = self.constants.events()
         self.reset()
         self.event.call_event(self.constants.events.INITIALIZATION_START_EVENT)
         self.state._log(f'initialize class', 'info')
         self.__std_cmd = std
-        for key in std_names: self._std_names[key] = std_names[key]
+        for key in std_names: self.config._std_names[key] = std_names[key]
         if std: self._reg_std() # add standart commands
-        self._line_parser = 'work_' + ('std' if std else 'default')
+        self.config._line_parser = 'work_' + ('std' if std else 'default')
         self.state._log(f'class initialization successful', 'info')
         self.event.call_event(self.constants.events.INITIALIZATION_END_EVENT)
         self._documentation_available = []
     
     def _reg_std(self):
         parser = Parser()
-        self.new_command(self._std_names['sm'], _Defaults._sm, parser)
-        self.new_command(self._std_names['em'], _Defaults._em, parser)
-        self.new_command(self._std_names['cm'], _Defaults._cm, parser)
-        self.new_command(self._std_names['cbs'], _Defaults._cbs, parser)
-        self.new_command(self._std_names['cbe'], _Defaults._cbe, parser)
+        self.new_command(self.config._std_names['sm'], _Defaults._sm, parser)
+        self.new_command(self.config._std_names['em'], _Defaults._em, parser)
+        self.new_command(self.config._std_names['cm'], _Defaults._cm, parser)
+        self.new_command(self.config._std_names['cbs'], _Defaults._cbs, parser)
+        self.new_command(self.config._std_names['cbe'], _Defaults._cbe, parser)
     
     def reset(self):
         super().__init__()
@@ -103,6 +104,8 @@ class Engine(_CodeState, _LangConfig):
         self.event.call_event(self.constants.events.RESET_START_EVENT)
         self.context = _LangContext()
         self.parser = Parser()
+        self.code_state = _CodeState()
+        self.config = _LangConfig()
         self.state = _LangState()
         self.gen = _LangGenerator()
         self.__std_cmd: bool = False
@@ -147,7 +150,7 @@ class Engine(_CodeState, _LangConfig):
             self.event.call_event(self.constants.events.COMPILE_LINE_START_EVENT)
             try: 
                 args = (line['raw'], line['tokens'])
-                parse_line = getattr(self, self._line_parser)
+                parse_line = getattr(self, self.config._line_parser)
                 parse_line(*args)
             except (RebasicSystemException, SystemError) as e:
                 self.event.call_event(self.constants.events.COMPILE_SYSTEM_EXCEPTION_EVENT)
@@ -161,7 +164,7 @@ class Engine(_CodeState, _LangConfig):
                     line=line['raw'], 
                     index=line_index, 
                     action=status,
-                    naming=f'Runtime Error => {self._lang_name}'
+                    naming=f'Runtime Error => {self.config._lang_name}'
                 )
             except (RebasicException, RebasicError) as e:
                 self.event.call_event(self.constants.events.COMPILE_EXCEPTION_EVENT)
@@ -171,7 +174,7 @@ class Engine(_CodeState, _LangConfig):
                     line=line['raw'], 
                     index=line_index, 
                     action=status,
-                    naming=f'Error => {self._lang_name}'
+                    naming=f'Error => {self.config._lang_name}'
                 )
             self.event.call_event(self.constants.events.COMPILE_LINE_END_EVENT)
             line_index += 1
@@ -181,7 +184,7 @@ class Engine(_CodeState, _LangConfig):
     def work_default(self, raw_line: str, tokens: list) -> None:
         self.state._log(f'start default work on line: {raw_line}', 'info')
         self.context._scope['_work_line'] = raw_line
-        self.event.call_event(self.constants.events.WORK_DEFUALT_START_EVENT)
+        self.event.call_event(self.constants.events.WORK_DEFAULT_START_EVENT)
         command: str = tokens[0].value
         if '(' in command:
             command = command.split('(')[0]
@@ -198,7 +201,7 @@ class Engine(_CodeState, _LangConfig):
             tokens = parsed['tokens']
             cmd['h'](self, raw_line, tokens)
         else: status = False
-        self.event.call_event(self.constants.events.WORK_DEFUALT_END_EVENT)
+        self.event.call_event(self.constants.events.WORK_DEFAULT_END_EVENT)
         self.state._log(f'end default work on line: {raw_line}, success: {status}', 'info')
         if self.__std_cmd: return status
         else:
@@ -207,7 +210,7 @@ class Engine(_CodeState, _LangConfig):
     
     def work_std(self, raw_line: str, tokens: list) -> None:
         self.state._log(f'start work on line: {raw_line}', 'info')
-        self.event.call_event(self.constants.events.WORK_DEFUALT_START_EVENT)
+        self.event.call_event(self.constants.events.WORK_DEFAULT_START_EVENT)
         command: str = tokens[0].value
         # ===================================
         #        MARK: BASIC LOGICS
@@ -224,20 +227,20 @@ class Engine(_CodeState, _LangConfig):
                 if self.context._add_comments: 
                     self.context.add_to_code([f"{self.context._comment_start
                     } Add code to macros {macro_name}"])
-                if macro_name in self.macroses and command: 
-                    self.macroses[macro_name].append(raw_line)
-                else: self.macroses[macro_name] = [raw_line]
-            if command.strip() not in (self._std_names['sm'], self._std_names['em']):
+                if macro_name in self.code_state.macroses and command: 
+                    self.code_state.macroses[macro_name].append(raw_line)
+                else: self.code_state.macroses[macro_name] = [raw_line]
+            if command.strip() not in (self.config._std_names['sm'], self.config._std_names['em']):
                 return
-        elif (self._write_raw is not None) and (raw_line.strip() != self._std_names['cbe']):
+        elif (self._write_raw is not None) and (raw_line.strip() != self.config._std_names['cbe']):
             self.event.call_event(self.constants.events.WORK_STD_ADD_TO_CODEBLOCK_EVENT)
             codeblock_name = self._write_raw
             if self.context._add_comments: 
                 self.context.add_to_code([f"{self.context._comment_start
                 } Add code to codeblock {codeblock_name}"])
-            if codeblock_name in self.code_blocks:
-                self.code_blocks[codeblock_name].append(raw_line)
-            else: self.code_blocks[codeblock_name] = [raw_line]
+            if codeblock_name in self.code_state.code_blocks:
+                self.code_state.code_blocks[codeblock_name].append(raw_line)
+            else: self.code_state.code_blocks[codeblock_name] = [raw_line]
             return
         elif (self._write_raw_system is not None):
             self.event.call_event(self.constants.events.WORK_STD_WRITE_SYSTEM_EVENT)
@@ -245,22 +248,22 @@ class Engine(_CodeState, _LangConfig):
             if self.context._add_comments: 
                 self.context.add_to_code([f"{self.context._comment_start
                 } Add code to codeblock {codeblock_name}"])
-            if codeblock_name in self.code_blocks:
-                self.code_blocks[codeblock_name].append(raw_line)
-            else: self.code_blocks[codeblock_name] = [raw_line]
+            if codeblock_name in self.code_state.code_blocks:
+                self.code_state.code_blocks[codeblock_name].append(raw_line)
+            else: self.code_state.code_blocks[codeblock_name] = [raw_line]
             return
         if self.state.DEBUG_MODE: print(f'------> {command} (std mode)')
         if self.state.DEBUG_MODE: print('executing:', repr(raw_line), tokens)
         if self.state.DEBUG_MODE: print(
             'state:', repr(self._write_raw), 
-            repr(self._std_names), 
+            repr(self.config._std_names), 
             self._in_macro, 
         )
         self.event.call_event(self.constants.events.WORK_STD_EXEC_CMD_EVENT)
         if self.work_default(raw_line, tokens): pass
-        elif raw_line.strip().startswith(self._std_names['com']): 
+        elif raw_line.strip().startswith(self.config._std_names['com']): 
             self.context.add_to_code([f'{self.context._comment_start}{raw_line.strip()[1:]}'])
         else: raise RebasicRuntimeException(f'Unknown Syntax: {command}')
-        self.event.call_event(self.constants.events.WORK_DEFUALT_END_EVENT)
+        self.event.call_event(self.constants.events.WORK_DEFAULT_END_EVENT)
         self.state._log(f'start work on line: {raw_line}', 'info')
         return True

@@ -3,6 +3,10 @@ import asyncio
 import inspect
 
 class _EventSystem:
+    '''
+    # _EventSystem
+    Event system for rebasic.
+    '''
     def __init__(self, engine: 'Engine'):
         self._engine = engine
         self.handlers: dict[str, list[str]] = {'':[]}

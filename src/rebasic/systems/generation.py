@@ -1,6 +1,10 @@
 # === start file ===
 
 class _LangGenerator:
+    '''
+    # _LangGenerator
+    Generation tools for rebasic.
+    '''
     def __init__(self):
         self.reset()
 

@@ -3,8 +3,8 @@ from rebasic import Engine
 
 
 class _TextBackend:
-    def __init__(self, trs: Engine):
-        self._trs = engine
+    def __init__(self, engine: Engine):
+        self._engine = engine
         engine.__backend__ = engine.context.constants.TEXT_GEN_FORMAT
         if engine.context._generation_format != engine.context.constants.TEXT_GEN_FORMAT:
             raise TypeError(
