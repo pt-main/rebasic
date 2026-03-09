@@ -5,6 +5,7 @@
 ![License](https://img.shields.io/badge/license-Apache_2.0-green.svg)
 [![Language](https://img.shields.io/badge/main_language-python-yellow.svg)](https://github.com/pt-main/rebasic)
 [![Python](https://img.shields.io/badge/require-python_3.10+-black.svg)](https://github.com/pt-main/rebasic)
+[![Python](https://img.shields.io/badge/api-not_stable-red.svg)](https://github.com/pt-main/rebasic)
 [![Dev](https://img.shields.io/badge/development-by_Pt-blue.svg)](https://github.com/pt-main/rebasic)
 
 ### `pip install rebasic`
