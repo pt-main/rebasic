@@ -29,5 +29,10 @@ class Node:
         return self.get(__i, Node(type=self.constants.NULL_NODE, value=None))
 
 
-def form_token_dict(raw: str, tokens: list[Node]) -> dict[str, list[Node] | str]:
-    return {'raw': raw, 'tokens': tokens}
+def form_token_dict(
+    raw: str, 
+    tokens: list[Node], 
+    switch: str | None = None
+) -> dict[str, list[Node] | str]:
+    if not isinstance(switch, str): switch = tokens[0].value.split('(')[0]
+    return {'raw': raw, 'tokens': tokens, 'switch': switch}

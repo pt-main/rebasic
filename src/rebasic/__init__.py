@@ -32,7 +32,7 @@ An opensource project for create language translators/compilers/interpreters.
 ---'''
 
 __framework_meta__ = {
-    'version': '1.7.0.1',
+    'version': '1.7.2',
     'name': 'rebasic',
     'stage': 'alpha',
     'release': '1'

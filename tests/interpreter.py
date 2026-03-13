@@ -21,5 +21,6 @@ def create():
 lang = create()
 lang.compile('''
 hello Pt
-count
+hello Test
+count 
 ''')

@@ -1,38 +1,52 @@
 from rebasic import Engine
-from rebasic.parsing import Node
+from rebasic.parsing import Node, Parser, Parser4
 from rebasic.systems.exceptions import RebasicRuntimeException
 
-# one handler for different commands
-def header(e: Engine, raw_line, tokens: list[Node]): 
-    hcount = tokens[0].value.count('#')
+def header(e: Engine, raw_line: str, tokens: list[Node]): 
+    token = tokens[0]
+    hcount = token['header'].count('#')
+    if token['header'] != '#' * hcount: raise ValueError(f"Invalid head: '{raw_line}'")
+    args: str = token['text']
+    e.context.add_to_code([f'<h{hcount}>{args}</h{hcount}>'])
+
+def bold(e: Engine, raw_line, tokens: list[Node]): 
     args = tokens[1].value
-    e.context.add_to_code([
-        f'<h{hcount}>{args}</h{hcount}>'
-    ])
+    e.context.add_to_code([f'<p style="font-weight: bold;">{args}</p>'])
+
+def cursive(e: Engine, raw_line, tokens: list[Node]): 
+    args = tokens[1].value
+    e.context.add_to_code([f'<p style="font-style: italic;">{args}</p>'])
+
+def styled(e: Engine, raw_line, tokens: list[Node]): 
+    args = tokens[1].value
+    parsed = Parser()(args)[0]['tokens']
+    style = parsed[0].value
+    text = parsed[1].value
+    e.context.add_to_code([f'<p style="{style}">{text}</p>'])
 
 def create():
-    e = Engine(std=False) # create engine without standart cmds
-    def parser(raw_line: str, tokens: list): # custom parser
-        try: e.work_default(raw_line, tokens)
-        except RebasicRuntimeException: 
-            e.context.add_to_code([raw_line])
-    # set custom parser as default:
-    e.md2html_parser = parser
-    e._line_parser = 'md2html_parser'
-    # register commands:
-    e.new_command('#', header)
-    e.new_command('##', header)
-    e.new_command('###', header)
-    e.new_command('####', header)
-    return e
+    engine = Engine(std=True, std_names={
+        'sm':'', 'cm':'', 'em':'@end',
+        'cbs':'', 'cbe':'',
+    })
+    parser = Parser4([
+        ('header', r'!(\s*)+(?P<header>#+)(\s*)+(?P<text>.+)'),
+    ])
+    engine.md2html_parser = parser
+    engine._line_parser = 'md2html_parser'
+    
+    engine.new_command('header', header)
+    engine.new_command('style', bold)
+    return engine
 
-
-lang = create()
-lang.compile('''
-# md header
-#### test md text
-<p>text</p>
+result = create().compile('''
+!## test
 ''')
-code = lang.context.generate_code()
-print(code)
-with open('out.html', 'w') as f: f.write(code)
+
+with open('out.html', 'w') as f: f.write(result)
+
+
+parser = Parser4([
+    ('header', r'!(\s*)+(?P<header>#+)(\s*)+(?P<text>.+)'),
+])
+print(parser('!### test text\n!# test'))

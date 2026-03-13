@@ -149,7 +149,7 @@ class Engine:
             self.state._log(f'compiling line: {repr(line['raw'])}', 'info') 
             self.event.call_event(self.constants.events.COMPILE_LINE_START_EVENT)
             try: 
-                args = (line['raw'], line['tokens'])
+                args = (line['raw'], line['tokens'], line['switch'])
                 parse_line = getattr(self, self.config._line_parser)
                 parse_line(*args)
             except (RebasicSystemException, SystemError) as e:
@@ -181,22 +181,19 @@ class Engine:
         self.event.call_event(self.constants.events.COMPILE_END_EVENT)
         return self.context.generate_code()
 
-    def work_default(self, raw_line: str, tokens: list) -> None:
+    def work_default(self, raw_line: str, tokens: list, switch: str) -> None:
         self.state._log(f'start default work on line: {raw_line}', 'info')
         self.context._scope['_work_line'] = raw_line
         self.event.call_event(self.constants.events.WORK_DEFAULT_START_EVENT)
-        command: str = tokens[0].value
-        if '(' in command:
-            command = command.split('(')[0]
-        if self.state.DEBUG_MODE: print(f'------> {command} (default mode)')
-        if self.state.DEBUG_MODE: print('executing:', repr(raw_line), tokens, repr(command))
+        if self.state.DEBUG_MODE: print(f'------> {switch} (default mode)')
+        if self.state.DEBUG_MODE: print('executing:', repr(raw_line), tokens, repr(switch))
         if self.state.DEBUG_MODE: print('commands:', self.commands)
         if self.context._add_comments: 
             self.context.add_to_code([f"{self.context._comment_start
-            } Executing command: {command}"])
+            } Executing command: {switch}"])
         status = True
-        if command in self.commands.keys():
-            cmd = self.commands[command]
+        if switch in self.commands.keys():
+            cmd = self.commands[switch]
             parsed = cmd['ap'](raw_line)[0]
             tokens = parsed['tokens']
             cmd['h'](self, raw_line, tokens)
@@ -206,12 +203,11 @@ class Engine:
         if self.__std_cmd: return status
         else:
             if not status:
-                raise RebasicRuntimeException(f'Unknown Syntax: {command}')
+                raise RebasicRuntimeException(f'Unknown Syntax (command is not found): {switch}')
     
-    def work_std(self, raw_line: str, tokens: list) -> None:
+    def work_std(self, raw_line: str, tokens: list, switch: str) -> None:
         self.state._log(f'start work on line: {raw_line}', 'info')
         self.event.call_event(self.constants.events.WORK_DEFAULT_START_EVENT)
-        command: str = tokens[0].value
         # ===================================
         #        MARK: BASIC LOGICS
         # ===================================
@@ -227,10 +223,10 @@ class Engine:
                 if self.context._add_comments: 
                     self.context.add_to_code([f"{self.context._comment_start
                     } Add code to macros {macro_name}"])
-                if macro_name in self.code_state.macroses and command: 
+                if macro_name in self.code_state.macroses and switch: 
                     self.code_state.macroses[macro_name].append(raw_line)
                 else: self.code_state.macroses[macro_name] = [raw_line]
-            if command.strip() not in (self.config._std_names['sm'], self.config._std_names['em']):
+            if switch.strip() not in (self.config._std_names['sm'], self.config._std_names['em']):
                 return
         elif (self._write_raw is not None) and (raw_line.strip() != self.config._std_names['cbe']):
             self.event.call_event(self.constants.events.WORK_STD_ADD_TO_CODEBLOCK_EVENT)
@@ -252,7 +248,7 @@ class Engine:
                 self.code_state.code_blocks[codeblock_name].append(raw_line)
             else: self.code_state.code_blocks[codeblock_name] = [raw_line]
             return
-        if self.state.DEBUG_MODE: print(f'------> {command} (std mode)')
+        if self.state.DEBUG_MODE: print(f'------> {switch} (std mode)')
         if self.state.DEBUG_MODE: print('executing:', repr(raw_line), tokens)
         if self.state.DEBUG_MODE: print(
             'state:', repr(self._write_raw), 
@@ -260,10 +256,10 @@ class Engine:
             self._in_macro, 
         )
         self.event.call_event(self.constants.events.WORK_STD_EXEC_CMD_EVENT)
-        if self.work_default(raw_line, tokens): pass
+        if self.work_default(raw_line, tokens, switch): pass
         elif raw_line.strip().startswith(self.config._std_names['com']): 
             self.context.add_to_code([f'{self.context._comment_start}{raw_line.strip()[1:]}'])
-        else: raise RebasicRuntimeException(f'Unknown Syntax: {command}')
+        else: raise RebasicRuntimeException(f'Unknown Syntax (command is not found): {switch}')
         self.event.call_event(self.constants.events.WORK_DEFAULT_END_EVENT)
         self.state._log(f'start work on line: {raw_line}', 'info')
         return True

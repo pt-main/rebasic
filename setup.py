@@ -5,7 +5,7 @@ setup(
     author='Pt',
     description='An opensource project for create language translators/compilers/interpreters.',
     author_email='kvantorium73.int@gmail.com',
-    version='1.1.0',
+    version='1.2.4',
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
     python_requires='>=3.10',
